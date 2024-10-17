@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, File, UploadFile, status, HTTPException, Request
 from fastapi.responses import FileResponse
 
-from schemas.receipt import CreateReceipt, CreatePerson, CreatePlace, CreateItem, CreateUser, GetReceipt, UpdateReceipt
+from schemas.receipt import CreateReceipt, CreatePerson, CreatePlace, CreateItem, GetReceipt, UpdateReceipt
 from services import Receipt
 
 router = APIRouter(tags=["Receipt"], prefix="/receipt")
@@ -22,11 +22,6 @@ async def create_person(request: Request, data: CreatePerson):
 @router.post("/create_place")
 async def create_place(request: Request, data: CreatePlace):
     return await Receipt.create_place(request, data)
-
-
-@router.post("/create_user")
-async def create_user(request: Request, data: CreateUser):
-    return await Receipt.create_user(request, data)
 
 
 @router.get(

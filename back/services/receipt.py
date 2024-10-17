@@ -5,9 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from starlette import status
 
 from database import new_session, ReceiptModel, PersonModel, PlaceModel, ItemModel, UserModel
-from schemas.receipt import CreateReceipt, GetReceipt, CreatePerson, GetPerson, CreatePlace, GetPlace, GetItem, \
-    CreateUser, GetUser, UpdateReceipt
-
+from schemas.receipt import CreateReceipt, GetReceipt, CreatePerson, GetPerson, CreatePlace, GetPlace, GetItem, UpdateReceipt
 
 class Receipt:
     @classmethod
@@ -15,12 +13,12 @@ class Receipt:
         async with new_session() as session:
             # data_dict = data.model_dump()
             receipt_field = ReceiptModel(
-                user_id = data.user_id,
-                receipt_cost = data.receipt_cost,
-                person_id = data.person_id,
-                is_user_purchase = data.is_user_purchase,
-                place_id = data.place_id,
-                creation_date = date.today()
+                user_id=data.user_id,
+                receipt_cost=data.receipt_cost,
+                person_id=data.person_id,
+                is_user_purchase=data.is_user_purchase,
+                place_id=data.place_id,
+                creation_date=date.today()
             )
             session.add(receipt_field)
             try:
@@ -36,9 +34,9 @@ class Receipt:
         async with new_session() as session:
             for i in range(len(data.items)):
                 field = ItemModel(
-                    receipt_id = receipt_field.id,
-                    cost = data.items[i].cost,
-                    amount = data.items[i].amount,
+                    receipt_id=receipt_field.id,
+                    cost=data.items[i].cost,
+                    amount=data.items[i].amount,
                 )
                 session.add(field)
             try:
@@ -50,7 +48,6 @@ class Receipt:
                 )
             await session.commit()
             # return GetReceipt(**field.__dict__)
-
 
     @classmethod
     async def create_person(cls, request: Request, data: CreatePerson):
@@ -83,22 +80,6 @@ class Receipt:
                 )
             await session.commit()
             return GetPlace(**field.__dict__)
-
-    @classmethod
-    async def create_user(cls, request: Request, data: CreateUser):
-        async with new_session() as session:
-            data_dict = data.model_dump()
-            field = UserModel(**data_dict)
-            session.add(field)
-            try:
-                await session.flush()
-            except IntegrityError:
-                raise HTTPException(
-                    status.HTTP_400_BAD_REQUEST,
-                    "Can't create: bad request",
-                )
-            await session.commit()
-            return GetUser(**field.__dict__)
 
     @classmethod
     async def get_receipt(cls, request: Request, id: int):
@@ -148,9 +129,9 @@ class Receipt:
         async with new_session() as session:
             for i in range(len(data.receipt.items)):
                 field = ItemModel(
-                    receipt_id = data.id,
-                    cost = data.receipt.items[i].cost,
-                    amount = data.receipt.items[i].amount,
+                    receipt_id=data.id,
+                    cost=data.receipt.items[i].cost,
+                    amount=data.receipt.items[i].amount,
                 )
                 session.add(field)
             try:

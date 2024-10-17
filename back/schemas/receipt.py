@@ -4,17 +4,6 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
-class CreateUser(BaseModel):
-    email: EmailStr
-    password: str
-
-
-class GetUser(BaseModel):
-    id: int
-    email: EmailStr
-    password: str
-
-
 class CreateItem(BaseModel):
     name: Optional[str]
     # receipt_id: Optional[int]

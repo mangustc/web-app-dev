@@ -2,9 +2,16 @@ from __future__ import annotations
 
 from fastapi import APIRouter, File, UploadFile, status, HTTPException, Request
 from fastapi.responses import FileResponse
+
+from schemas.user import CreateUser
 from services import User
 
 router = APIRouter(tags=["User"], prefix="/user")
+
+
+@router.post("/create_user")
+async def create_user(request: Request, data: CreateUser):
+    return await User.create_user(request, data)
 
 
 @router.put("/id/{user_id}/change_photo")

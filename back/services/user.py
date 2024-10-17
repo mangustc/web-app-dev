@@ -1,5 +1,7 @@
 from fastapi import UploadFile, HTTPException, status, Request
 from fastapi.responses import FileResponse
+from sqlalchemy.exc import IntegrityError
+
 from database import new_session, UserModel
 from sqlalchemy.orm import joinedload
 from sqlalchemy import select, delete, Select
@@ -7,8 +9,26 @@ from uuid import uuid4
 import shutil
 import os
 
+from schemas.user import CreateUser, GetUser
+
 
 class User:
+    @classmethod
+    async def create_user(cls, request: Request, data: CreateUser):
+        async with new_session() as session:
+            data_dict = data.model_dump()
+            field = UserModel(**data_dict)
+            session.add(field)
+            try:
+                await session.flush()
+            except IntegrityError:
+                raise HTTPException(
+                    status.HTTP_400_BAD_REQUEST,
+                    "Can't create: bad request",
+                )
+            await session.commit()
+            return GetUser(**field.__dict__)
+
     @classmethod
     async def change_user_photo(cls, request: Request, user_id: int, photo: UploadFile):
 
