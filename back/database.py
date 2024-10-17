@@ -20,8 +20,8 @@ class UserModel(Model):
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
 
-    receipts: Mapped[list["ReceiptModel"]] = relationship()
-
+    receipts = relationship("ReceiptModel", back_populates="user", uselist=True, lazy='subquery')
+    persons = relationship("PersonModel", back_populates="user", uselist=True, lazy='subquery')
 
 class ReceiptModel(Model):
     __tablename__ = "receipt"
@@ -32,10 +32,14 @@ class ReceiptModel(Model):
     person_id: Mapped[int] = mapped_column(ForeignKey("person.id", ondelete="CASCADE"))
     is_user_purchase: Mapped[bool]
     place_id: Mapped[int] = mapped_column(ForeignKey("place.id", ondelete="CASCADE"))
+    creation_date: Mapped[date]
 
-    items: Mapped[list["ItemModel"]] = relationship()
-    person: Mapped["PersonModel"] = relationship()
-    place: Mapped["PlaceModel"] = relationship()
+    user = relationship("UserModel", back_populates='receipts', lazy='subquery')
+    person = relationship("PersonModel", back_populates='receipts', lazy='subquery')
+
+    items = relationship("ItemModel", back_populates="receipt", uselist=True, lazy='subquery')
+    # person: Mapped["PersonModel"] = relationship()
+    # place: Mapped["PlaceModel"] = relationship()
 
 
 class ItemModel(Model):
@@ -47,7 +51,7 @@ class ItemModel(Model):
     cost: Mapped[float]
     amount: Mapped[float]
 
-    receipt: Mapped["ReceiptModel"] = relationship()
+    receipt = relationship("ReceiptModel", back_populates='items', lazy='subquery')
 
 
 class PersonModel(Model):
@@ -57,7 +61,9 @@ class PersonModel(Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
     person_name: Mapped[str]
 
-    user: Mapped["UserModel"] = relationship()
+    user = relationship("UserModel", back_populates='persons')
+
+    receipts = relationship("ReceiptModel", back_populates="person", uselist=True, lazy='subquery')
 
 
 class PlaceModel(Model):

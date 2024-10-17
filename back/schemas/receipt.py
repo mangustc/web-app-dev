@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr
@@ -16,6 +17,7 @@ class GetUser(BaseModel):
 
 class CreateItem(BaseModel):
     name: Optional[str]
+    # receipt_id: Optional[int]
     cost: float
     amount: float
 
@@ -45,6 +47,7 @@ class GetReceipt(BaseModel):
     is_user_purchase: bool
     place_id: int
     items: list[GetItem]
+    creation_date: date
 
 
 class CreatePerson(BaseModel):
@@ -65,3 +68,8 @@ class CreatePlace(BaseModel):
 class GetPlace(BaseModel):
     id: int
     place_name: str
+
+
+class UpdateReceipt(BaseModel):
+    id: int
+    receipt: CreateReceipt
