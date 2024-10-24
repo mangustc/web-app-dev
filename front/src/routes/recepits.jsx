@@ -1,16 +1,17 @@
 import { useState } from "react";
 import Receipt from "../components/receipt";
 import { newReceipt } from "../objects";
+import { getReceipts } from "../requests";
+import { useLoaderData } from "react-router-dom";
 
-export default function Receipts() {
-  let test = [
-    newReceipt(7, "magazin", "alisa", 100, 200),
-    newReceipt(8, "magazin", "alisa", 100, 200),
-    newReceipt(9, "magazin", "alisa", 100, 200),
-    newReceipt(10, "magazin", "alisa", 100, 200),
-    newReceipt(11, "magazin", "alisa", 100, 200),
-  ];
-  const [receipts, setReceipts] = useState(test);
+export const loader = async function () {
+  const receiptList = await getReceipts();
+  return { receiptList };
+};
+
+export const Receipts = function () {
+  const { receiptList } = useLoaderData();
+  const [receipts, setReceipts] = useState(receiptList);
   let deleteReceipt = function (id) {
     let newReceipts = receipts.slice();
     for (let i = 0; i < newReceipts.length; i++) {
@@ -76,4 +77,4 @@ export default function Receipts() {
       </div>
     </>
   );
-}
+};

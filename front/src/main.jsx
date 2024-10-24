@@ -5,7 +5,7 @@ import Root from "./routes/root";
 import "./index.css";
 import ErrorPage from "./error-page";
 import Auth from "./routes/auth";
-import Receipts from "./routes/recepits";
+import { Receipts, loader as receiptsLoader } from "./routes/recepits";
 import Testroute from "./routes/testroute";
 
 const router = createBrowserRouter([
@@ -13,7 +13,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
-    // loader: rootLoader,
     children: [
       {
         path: "auth",
@@ -21,6 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: "receipts",
+        loader: receiptsLoader,
         element: <Receipts />,
       },
       {

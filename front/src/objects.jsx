@@ -21,3 +21,12 @@ export const newItem = function (ID, cost, amount) {
     amount: amount,
   };
 };
+
+export const getPlaceName = function (placeID) {
+  switch (placeID) {
+    case 1:
+      return "place1";
+    default:
+      return "default";
+  }
+};
