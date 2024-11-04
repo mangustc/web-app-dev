@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GET_Photo, PUT_ChangePhoto } from "../requests";
+import { PUT_ChangePhoto } from "../requests";
 
 export default function Auth() {
   /* Random number meaning:
@@ -8,9 +8,17 @@ export default function Auth() {
    * */
   const [authState, setAuthState] = useState(0);
 
+  const updatePhoto = function () {
+    setPhotoPath(
+      `http://localhost:8000/api/user/id/1/photo?hash=${Date.now()}`,
+    );
+  };
+
   const [photoPath, setPhotoPath] = useState("");
   useEffect(() => {
-    GET_Photo(1).then((photo) => setPhotoPath(URL.createObjectURL(photo)));
+    setPhotoPath(
+      `http://localhost:8000/api/user/id/1/photo?hash=${Date.now()}`,
+    );
   }, []);
 
   const [selectedFile, setSelectedFile] = useState("");
@@ -18,7 +26,7 @@ export default function Auth() {
     const formData = new FormData();
     formData.append("photo", selectedFile);
     PUT_ChangePhoto(1, formData).then(() => {
-      GET_Photo(1).then((photo) => setPhotoPath(URL.createObjectURL(photo)));
+      updatePhoto();
     });
   };
 

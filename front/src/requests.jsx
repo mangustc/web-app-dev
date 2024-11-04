@@ -145,6 +145,7 @@ export const PUT_ChangePhoto = async function (id, data) {
 export const GET_Photo = async function (id) {
   let response = await fetch(`http://localhost:8000/api/user/id/${id}/photo`);
   let photo = await response.blob();
+  console.log(photo);
 
   return photo;
 };
