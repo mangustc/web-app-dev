@@ -5,15 +5,13 @@ import Root from "./routes/root";
 import "./index.css";
 import ErrorPage from "./error-page";
 import Auth from "./routes/auth";
-import Receipts from "./routes/recepits";
-import Testroute from "./routes/testroute";
+import { Receipts } from "./routes/recepits";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
-    // loader: rootLoader,
     children: [
       {
         path: "auth",
@@ -22,10 +20,6 @@ const router = createBrowserRouter([
       {
         path: "receipts",
         element: <Receipts />,
-      },
-      {
-        path: "testroute",
-        element: <Testroute />,
       },
     ],
   },
