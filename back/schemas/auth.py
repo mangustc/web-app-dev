@@ -1,18 +1,16 @@
 from pydantic import BaseModel, EmailStr
-from field_types import Id, PasswordStr
 
 
 class UserCookie(BaseModel):
-    id: int = Id
-    email: EmailStr
+    session_uuid: str
 
 
 class Register(BaseModel):
-    email: EmailStr = "mail@email.com"
-    password: PasswordStr = "aoeuidhtn"
-    re_password: PasswordStr = "aoeuidhtn"
+    email: EmailStr
+    password: str
+    re_password: str
 
 
 class Login(BaseModel):
-    email: EmailStr = "mail@email.com"
-    password: PasswordStr = "aoeuidhtn"
+    email: EmailStr
+    password: str

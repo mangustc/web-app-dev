@@ -12,6 +12,16 @@ class Model(DeclarativeBase):
     pass
 
 
+class SessionModel(Model):
+    __tablename__ = "session"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    session_uuid: Mapped[str] = mapped_column(unique=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
+
+    user = relationship("UserModel", back_populates='sessions', lazy='subquery')
+
+
 class UserModel(Model):
     __tablename__ = "user"
 
@@ -22,6 +32,8 @@ class UserModel(Model):
 
     receipts = relationship("ReceiptModel", back_populates="user", uselist=True, lazy='subquery')
     persons = relationship("PersonModel", back_populates="user", uselist=True, lazy='subquery')
+    sessions = relationship("SessionModel", back_populates="user", uselist=True, lazy='subquery')
+
 
 class ReceiptModel(Model):
     __tablename__ = "receipt"

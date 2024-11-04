@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException, Response, Request
-from schemas import Register, GetUser, Login, Inform, UserCookie
+from schemas.auth import Register, Login, UserCookie
+from schemas.user import GetUser
 from services import Auth
-
 
 router = APIRouter(tags=["Authentication"], prefix="/auth")
 
@@ -21,13 +21,11 @@ async def login(data: Login):
     return await Auth.login(data)
 
 
-@router.put("/logout", response_model=Inform, status_code=status.HTTP_200_OK)
+@router.put("/logout", status_code=status.HTTP_200_OK)
 async def logout(request: Request, response: Response):
     return await Auth.logout(request, response)
 
 
-@router.get(
-    "/get_logged_user", response_model=UserCookie, status_code=status.HTTP_200_OK
-)
-async def get_user_cookie_contents(request: Request):
-    return await Auth.get_user_cookie_contents(request)
+@router.get("/get_logged_user", response_model=GetUser, status_code=status.HTTP_200_OK)
+async def get_user(request: Request):
+    return await Auth.get_user(request)
