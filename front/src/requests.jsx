@@ -1,17 +1,18 @@
-import { newReceiptFromJSON, newReceiptFullFromJSON } from "./objects";
+import {
+  newPersonFromJSON,
+  newReceiptFromJSON,
+  newReceiptFullFromJSON,
+} from "./objects";
 
 export const GET_Receipts = async function () {
-  let response = await fetch(
-    "http://localhost:8000/api/receipt/get_receipts?" +
-      new URLSearchParams({
-        user_id: 1,
-      }),
-    {
-      method: "GET",
-      headers: {},
-    },
-  );
+  let response = await fetch("http://localhost:8000/api/receipt/get_receipts", {
+    method: "GET",
+    headers: {},
+    credentials: "include",
+  });
   let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
 
   let receiptList = [];
   for (let i = 0; i < json.length; i++) {
@@ -30,10 +31,13 @@ export const GET_Receipt = async function (id) {
     {
       method: "GET",
       headers: {},
+      credentials: "include",
     },
   );
   let json = await response.json();
   const receipt = newReceiptFullFromJSON(json);
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
 
   return receipt;
 };
@@ -47,9 +51,12 @@ export const DELETE_Receipt = async function (id) {
     {
       method: "DELETE",
       headers: {},
+      credentials: "include",
     },
   );
   let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
 
   return json;
 };
@@ -64,7 +71,6 @@ export const POST_CreateReceipt = async function (receiptFull) {
     });
   }
   const body = {
-    user_id: 1,
     receipt_cost: receiptFull.receiptCost,
     person_id: receiptFull.personID,
     is_user_purchase: receiptFull.isUserPurchase,
@@ -80,9 +86,12 @@ export const POST_CreateReceipt = async function (receiptFull) {
         accept: "application/json",
       },
       body: JSON.stringify(body),
+      credentials: "include",
     },
   );
   let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
 
   return json;
 };
@@ -99,7 +108,6 @@ export const PUT_UpdateReceipt = async function (receiptFull) {
   const body = {
     id: receiptFull.id,
     receipt: {
-      user_id: 1,
       receipt_cost: receiptFull.receiptCost,
       person_id: receiptFull.personID,
       is_user_purchase: receiptFull.isUserPurchase,
@@ -107,7 +115,6 @@ export const PUT_UpdateReceipt = async function (receiptFull) {
       items: newItems,
     },
   };
-  console.log(body);
   let response = await fetch(
     "http://localhost:8000/api/receipt/update_receipt",
     {
@@ -117,27 +124,32 @@ export const PUT_UpdateReceipt = async function (receiptFull) {
         accept: "application/json",
       },
       body: JSON.stringify(body),
+      credentials: "include",
     },
   );
   let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
 
   return json;
 };
 
-export const PUT_ChangePhoto = async function (id, data) {
-  console.log(data);
+export const PUT_ChangePhoto = async function (data) {
   const body = data;
   let response = await fetch(
-    `http://localhost:8000/api/user/id/${id}/change_photo`,
+    `http://localhost:8000/api/user/id/1/change_photo`,
     {
       method: "PUT",
       headers: {
         accept: "application/json",
       },
       body: body,
+      credentials: "include",
     },
   );
   let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
 
   return json;
 };
@@ -145,7 +157,106 @@ export const PUT_ChangePhoto = async function (id, data) {
 export const GET_Photo = async function (id) {
   let response = await fetch(`http://localhost:8000/api/user/id/${id}/photo`);
   let photo = await response.blob();
-  console.log(photo);
 
   return photo;
+};
+
+export const POST_Register = async function (email, password, rePassword) {
+  const body = {
+    email: email,
+    password: password,
+    re_password: rePassword,
+  };
+  let response = await fetch(`http://localhost:8000/api/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(body),
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+
+  return json;
+};
+
+export const PUT_Login = async function (email, password) {
+  const body = {
+    email: email,
+    password: password,
+  };
+  let response = await fetch(`http://localhost:8000/api/auth/login`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(body),
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+
+  return json;
+};
+
+export const PUT_Logout = async function () {
+  const body = {};
+  let response = await fetch(`http://localhost:8000/api/auth/logout`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(body),
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+
+  return json;
+};
+
+export const GET_GetLoggedUser = async function () {
+  let response = await fetch(`http://localhost:8000/api/auth/get_logged_user`, {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+    },
+    credentials: "include",
+  });
+  let json = await response.json();
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+
+  return json;
+};
+
+export const POST_CreatePerson = async function (personName) {
+  const body = {
+    person_name: personName,
+  };
+  let response = await fetch(
+    `http://localhost:8000/api/receipt/create_person`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(body),
+    },
+  );
+  let json = await response.json();
+  let person = newPersonFromJSON(json);
+  let status = response.status;
+  if (status >= 400) throw new Error("Unsuccessful");
+
+  return person;
 };

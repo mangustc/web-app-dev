@@ -5,15 +5,23 @@ import { newItem, newReceiptFull } from "../objects";
 import { GET_Receipt } from "../requests";
 
 function ReceiptFull({ id, addReceipt, editReceipt }) {
-  let [receipt, setReceipt] = useState(null);
+  const [receipt, setReceipt] = useState(
+    newReceiptFull(0, 0, 0, [], "", true, 1),
+  );
+  const [items, setItems] = useState([]);
+  const [isUserPurchase, setIsUserPurchase] = useState(true);
+  const [receiptCost, setReceiptCost] = useState(0);
+  const [personID, _setPersonID] = useState(() => {
+    const lastPersonID = localStorage.getItem("lastPersonID");
+    return lastPersonID ? parseInt(lastPersonID) : 0;
+  });
+  const setPersonID = function (newPersonID) {
+    _setPersonID(newPersonID);
+    localStorage.setItem("lastPersonID", newPersonID);
+  };
+
   useEffect(() => {
-    if (id == 0) {
-      setReceipt(newReceiptFull(0, 1, 0, 0, [], "", true, 1));
-      setItems([]);
-      setIsUserPurchase(true);
-      setReceiptCost(0);
-      setPersonID(1);
-    } else {
+    if (id != 0) {
       GET_Receipt(id).then((receiptFull) => {
         setReceipt(receiptFull);
         setItems(receiptFull.items);
@@ -23,6 +31,15 @@ function ReceiptFull({ id, addReceipt, editReceipt }) {
       });
     }
   }, [id]);
+
+  const getReceiptData = function () {
+    const receiptFull = JSON.parse(JSON.stringify(receipt));
+    receiptFull.items = items;
+    receiptFull.isUserPurchase = isUserPurchase;
+    receiptFull.receiptCost = receiptCost;
+    receiptFull.personID = personID;
+    return receiptFull;
+  };
 
   function addItem() {
     let nextID = items.length > 0 ? items[items.length - 1].ID + 1 : 0;
@@ -48,20 +65,6 @@ function ReceiptFull({ id, addReceipt, editReceipt }) {
     }
     setItems(newItems);
   }
-
-  const [items, setItems] = useState([]);
-  const [isUserPurchase, setIsUserPurchase] = useState(true);
-  const [receiptCost, setReceiptCost] = useState(0);
-  const [personID, setPersonID] = useState(1);
-
-  const getReceiptData = function () {
-    const receiptFull = JSON.parse(JSON.stringify(receipt));
-    receiptFull.items = items;
-    receiptFull.isUserPurchase = isUserPurchase;
-    receiptFull.receiptCost = receiptCost;
-    receiptFull.personID = personID;
-    return receiptFull;
-  };
 
   return (
     <div className="receipt-container">

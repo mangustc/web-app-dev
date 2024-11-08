@@ -1,32 +1,29 @@
-import { useEffect, useState } from "react";
-import { PUT_ChangePhoto } from "../requests";
+import { useContext, useState } from "react";
+import { POST_Register, PUT_Login } from "../requests";
+import { AuthContext } from "./root";
+import { useNavigate } from "react-router-dom";
 
 export default function Auth() {
   /* Random number meaning:
    * authState = 0: Login
    * authState = 1: Signup
    * */
+  const navigate = useNavigate();
+  const { setAuthenticated } = useContext(AuthContext);
   const [authState, setAuthState] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
 
-  const updatePhoto = function () {
-    setPhotoPath(
-      `http://localhost:8000/api/user/id/1/photo?hash=${Date.now()}`,
-    );
+  let login = function () {
+    PUT_Login(email, password).then(() => {
+      setAuthenticated(true);
+      navigate("/profile");
+    });
   };
-
-  const [photoPath, setPhotoPath] = useState("");
-  useEffect(() => {
-    setPhotoPath(
-      `http://localhost:8000/api/user/id/1/photo?hash=${Date.now()}`,
-    );
-  }, []);
-
-  const [selectedFile, setSelectedFile] = useState("");
-  const uploadFile = function () {
-    const formData = new FormData();
-    formData.append("photo", selectedFile);
-    PUT_ChangePhoto(1, formData).then(() => {
-      updatePhoto();
+  let register = function () {
+    POST_Register(email, password, rePassword).then(() => {
+      setAuthState(0);
     });
   };
 
@@ -45,86 +42,86 @@ export default function Auth() {
             setAuthState(1);
           }}
         >
-          Signup
+          Register
         </button>
       </div>
       {authState == 0 && (
         <div>
           <h3>Login</h3>
-          <form action="">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label htmlFor="first">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your Email"
-                required
-              />
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label htmlFor="first">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your Email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-              <label htmlFor="password">Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your Password"
-                required
-              />
-            </div>
-            <div>
-              <button type="submit">Submit</button>
-            </div>
-          </form>
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your Password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div>
+            <button type="submit" onClick={login}>
+              Login
+            </button>
+          </div>
         </div>
       )}
       {authState == 1 && (
         <div>
-          <h3>Signup</h3>
-          <form action="">
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label htmlFor="first">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your Email"
-                required
-              />
+          <h3>Register</h3>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label htmlFor="first">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your Email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-              <label htmlFor="password">Password:</label>
-              <input
-                type="password"
-                id="password1"
-                name="password1"
-                placeholder="Enter your Password"
-                required
-              />
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your Password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-              <label htmlFor="password">Repeat Password:</label>
-              <input
-                type="password"
-                id="password2"
-                name="password2"
-                placeholder="Repeat your Password"
-                required
-              />
-            </div>
-            <div>
-              <button type="submit">Submit</button>
-            </div>
-          </form>
+            <label htmlFor="password">Repeat Password:</label>
+            <input
+              type="password"
+              id="rePassword"
+              name="rePassword"
+              placeholder="Repeat your Password"
+              required
+              value={rePassword}
+              onChange={(e) => setRePassword(e.target.value)}
+            />
+          </div>
+          <div>
+            <button type="submit" onClick={register}>
+              Register
+            </button>
+          </div>
         </div>
       )}
-      {photoPath != "" ? <img src={photoPath} /> : "Loading..."}
-      <input
-        type="file"
-        onChange={(e) => {
-          setSelectedFile(e.target.files[0]);
-        }}
-      />
-      <button type="button" onClick={uploadFile}>
-        Upload
-      </button>
     </>
   );
 }
