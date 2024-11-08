@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Optional
@@ -36,6 +36,7 @@ class UserModel(Model):
 
 
 class ReceiptModel(Model):
+
     __tablename__ = "receipt"
 
     id: Mapped[int] = mapped_column(primary_key=True)

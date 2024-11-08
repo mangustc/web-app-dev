@@ -9,16 +9,11 @@ from services import User
 router = APIRouter(tags=["User"], prefix="/user")
 
 
-@router.post("/create_user")
-async def create_user(request: Request, data: CreateUser):
-    return await User.create_user(request, data)
-
-
 @router.put("/id/{user_id}/change_photo")
 async def change_user_photo(
-        request: Request, user_id: int, photo: UploadFile = File(...)
+        request: Request, photo: UploadFile = File(...)
 ):
-    return await User.change_user_photo(request, user_id, photo)
+    return await User.change_user_photo(request, photo)
 
 
 @router.get("/id/{user_id}/photo", response_class=FileResponse)

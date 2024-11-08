@@ -38,8 +38,8 @@ async def get_receipt(request: Request, id: int):
     response_model=list[GetReceipt],
     status_code=status.HTTP_200_OK,
 )
-async def get_receipts(request: Request, user_id: int):
-    return await Receipt.get_receipts(request, user_id)
+async def get_receipts(request: Request):
+    return await Receipt.get_receipts(request)
 
 
 @router.put(

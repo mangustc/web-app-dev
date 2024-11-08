@@ -2,6 +2,7 @@ from fastapi import UploadFile, HTTPException, status, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.exc import IntegrityError
 
+import functions
 from database import new_session, UserModel
 from sqlalchemy.orm import joinedload
 from sqlalchemy import select, delete, Select
@@ -13,25 +14,10 @@ from schemas.user import CreateUser, GetUser
 
 
 class User:
-    @classmethod
-    async def create_user(cls, request: Request, data: CreateUser):
-        async with new_session() as session:
-            data_dict = data.model_dump()
-            field = UserModel(**data_dict)
-            session.add(field)
-            try:
-                await session.flush()
-            except IntegrityError:
-                raise HTTPException(
-                    status.HTTP_400_BAD_REQUEST,
-                    "Can't create: bad request",
-                )
-            await session.commit()
-            return GetUser(**field.__dict__)
 
     @classmethod
-    async def change_user_photo(cls, request: Request, user_id: int, photo: UploadFile):
-
+    async def change_user_photo(cls, request: Request, photo: UploadFile):
+        user = await functions.get_user(request)
         if photo.content_type != "image/png" and photo.content_type != "image/jpeg":
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -45,7 +31,7 @@ class User:
         path = f"media/{photo.filename}"
 
         async with new_session() as session:
-            query = select(UserModel).filter_by(id=user_id)
+            query = select(UserModel).filter_by(id=user.id)
             result = await session.execute(query)
             user_field = result.scalars().first()
             if user_field is None:

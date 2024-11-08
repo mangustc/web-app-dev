@@ -20,7 +20,6 @@ class GetItem(BaseModel):
 
 
 class CreateReceipt(BaseModel):
-    user_id: int
     receipt_cost: float
     person_id: int
     is_user_purchase: bool
@@ -30,7 +29,6 @@ class CreateReceipt(BaseModel):
 
 class GetReceipt(BaseModel):
     id: int
-    user_id: int
     receipt_cost: float
     person_id: int
     is_user_purchase: bool
@@ -40,13 +38,11 @@ class GetReceipt(BaseModel):
 
 
 class CreatePerson(BaseModel):
-    user_id: int
     person_name: str
 
 
 class GetPerson(BaseModel):
     id: int
-    user_id: int
     person_name: str
 
 

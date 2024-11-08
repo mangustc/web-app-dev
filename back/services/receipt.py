@@ -4,16 +4,34 @@ from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from starlette import status
 
+import functions
 from database import new_session, ReceiptModel, PersonModel, PlaceModel, ItemModel, UserModel
 from schemas.receipt import CreateReceipt, GetReceipt, CreatePerson, GetPerson, CreatePlace, GetPlace, GetItem, UpdateReceipt
 
 class Receipt:
     @classmethod
     async def create_receipt(cls, request: Request, data: CreateReceipt):
+        user = await functions.get_user(request)
+
         async with new_session() as session:
-            # data_dict = data.model_dump()
+            query = select(PersonModel).filter_by(user_id=user.id)
+            result = await session.execute(query)
+            persons = result.scalars().all()
+
+        result = 0
+        for person in persons:
+            if person.id == data.person_id:
+                result = 1
+                break
+        if result == 0:
+            raise HTTPException(
+                status.HTTP_422_UNPROCESSABLE_ENTITY,
+                "Can't create: bad request",
+            )
+
+        async with new_session() as session:
             receipt_field = ReceiptModel(
-                user_id=data.user_id,
+                user_id=user.id,
                 receipt_cost=data.receipt_cost,
                 person_id=data.person_id,
                 is_user_purchase=data.is_user_purchase,
@@ -51,9 +69,13 @@ class Receipt:
 
     @classmethod
     async def create_person(cls, request: Request, data: CreatePerson):
+        user = await functions.get_user(request)
+
         async with new_session() as session:
-            data_dict = data.model_dump()
-            field = PersonModel(**data_dict)
+            field = PersonModel(
+                user_id=user.id,
+                person_name=data.person_name
+            )
             session.add(field)
             try:
                 await session.flush()
@@ -67,6 +89,7 @@ class Receipt:
 
     @classmethod
     async def create_place(cls, request: Request, data: CreatePlace):
+
         async with new_session() as session:
             data_dict = data.model_dump()
             field = PlaceModel(**data_dict)
@@ -83,8 +106,10 @@ class Receipt:
 
     @classmethod
     async def get_receipt(cls, request: Request, id: int):
+        user = await functions.get_user(request)
+
         async with new_session() as session:
-            query = select(ReceiptModel).filter_by(id=id)
+            query = select(ReceiptModel).filter_by(id=id, user_id=user.id)
             result = await session.execute(query)
             field = result.scalars().first()
             if field is None:
@@ -95,17 +120,21 @@ class Receipt:
             return field
 
     @classmethod
-    async def get_receipts(cls, request: Request, user_id: int):
+    async def get_receipts(cls, request: Request):
+        user = await functions.get_user(request)
+
         async with new_session() as session:
-            query = select(ReceiptModel).filter_by(user_id=user_id)
+            query = select(ReceiptModel).filter_by(user_id=user.id)
             result = await session.execute(query)
             fields = result.scalars().all()
             return fields
 
     @classmethod
     async def update_receipt(cls, request: Request, data: UpdateReceipt):
+        user = await functions.get_user(request)
+
         async with new_session() as session:
-            query = select(ReceiptModel).filter_by(id=data.id)
+            query = select(ReceiptModel).filter_by(id=data.id, user_id=user.id)
             result = await session.execute(query)
             field = result.scalars().first()
             if field is None:
@@ -148,14 +177,22 @@ class Receipt:
 
     @classmethod
     async def delete_receipt(cls, request: Request, id: int):
+        user = await functions.get_user(request)
+
         async with new_session() as session:
-            query = delete(ItemModel).filter_by(receipt_id=id)
-            await session.execute(query)
+            query = delete(ReceiptModel).filter_by(id=id, user_id=user.id)
+            result = await session.execute(query)
             await session.flush()
             await session.commit()
 
+        if result.rowcount == 0:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No sufficient rights",
+            )
+
         async with new_session() as session:
-            query = delete(ReceiptModel).filter_by(id=id)
+            query = delete(ItemModel).filter_by(receipt_id=id)
             await session.execute(query)
             await session.flush()
             await session.commit()
