@@ -5,3 +5,5 @@ aiosqlite
 python-multipart
 aiofiles
 pyjwt
+websockets
+typer

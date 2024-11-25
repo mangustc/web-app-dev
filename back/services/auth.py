@@ -59,7 +59,7 @@ class Auth:
             except IntegrityError:
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST,
-                    "Can't add user to the database, possible: email exists",
+                    "This session already exists",
                 )
             await session.commit()
 
