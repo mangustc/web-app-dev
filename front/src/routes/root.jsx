@@ -1,19 +1,30 @@
 import { Outlet } from "react-router-dom";
 import Navigation from "../components/navigation";
+import { createContext, useState } from "react";
+import Cookies from "universal-cookie";
 
-// export async function loader() {
-//   const contacts = await getContacts();
-//   return { contacts };
-// }
+const cookies = new Cookies();
+export const AuthContext = createContext({
+  authenticated: (() => {
+    return cookies.get("token") ? true : false;
+  })(),
+  setAuthenticated: (auth) => {},
+});
 
 export default function Root() {
-  // const { contacts } = useLoaderData();
+  const [authenticated, setAuthenticated] = useState(
+    (() => {
+      return cookies.get("token") ? true : false;
+    })(),
+  );
   return (
-    <div className="root-container">
-      <Navigation></Navigation>
-      <div className="outlet-container">
-        <Outlet />
+    <AuthContext.Provider value={{ authenticated, setAuthenticated }}>
+      <div className="root-container">
+        <Navigation></Navigation>
+        <div className="outlet-container">
+          <Outlet />
+        </div>
       </div>
-    </div>
+    </AuthContext.Provider>
   );
 }

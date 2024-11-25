@@ -61,7 +61,6 @@ export const newReceipt = function (
 export const newReceiptFullFromJSON = function (obj) {
   return newReceiptFull(
     obj.id,
-    obj.user_id,
     obj.receipt_cost,
     obj.person_id,
     obj.is_user_purchase,
@@ -73,7 +72,6 @@ export const newReceiptFullFromJSON = function (obj) {
 
 export const newReceiptFull = function (
   id,
-  user_id,
   receipt_cost,
   person_id,
   is_user_purchase,
@@ -87,7 +85,6 @@ export const newReceiptFull = function (
   }
   return {
     id: Number(id),
-    userID: Number(user_id),
     receiptCost: Number(receipt_cost),
     personID: Number(person_id),
     items: newItems,
@@ -112,4 +109,18 @@ export const getPlaceName = function (placeID) {
     default:
       return "default";
   }
+};
+
+export const newPersonFromJSON = function (json) {
+  return {
+    ID: Number(json.id),
+    personName: String(json.person_name),
+  };
+};
+
+export const newPerson = function (ID, personName) {
+  return {
+    ID: Number(ID),
+    personName: String(personName),
+  };
 };

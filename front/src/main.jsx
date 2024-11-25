@@ -6,6 +6,7 @@ import "./index.css";
 import ErrorPage from "./error-page";
 import Auth from "./routes/auth";
 import { Receipts } from "./routes/recepits";
+import Profile from "./routes/profile";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "receipts",
         element: <Receipts />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
     ],
   },
