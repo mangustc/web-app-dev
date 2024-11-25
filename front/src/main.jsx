@@ -7,6 +7,7 @@ import ErrorPage from "./error-page";
 import Auth from "./routes/auth";
 import { Receipts } from "./routes/recepits";
 import Profile from "./routes/profile";
+import Chat from "./routes/chat";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "chat",
+        element: <Chat />,
       },
     ],
   },

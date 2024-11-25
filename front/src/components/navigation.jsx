@@ -19,6 +19,9 @@ export default function Navigation() {
             <Link className="link-button" to={`profile`}>
               P
             </Link>
+            <Link className="link-button" to={`chat`}>
+              C
+            </Link>
           </>
         )}
       </nav>
