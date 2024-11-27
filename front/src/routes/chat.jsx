@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GET_GetLoggedUser } from "../requests";
 import useWebSocket from "react-use-websocket";
+import { CHAT_WS_URL } from "../constants";
 
 export default function Chat() {
   // const [createdWS, setCreatedWS] = useState(false);
@@ -42,9 +43,7 @@ export default function Chat() {
     });
   }, []);
 
-  const socketUrl = user
-    ? `ws://localhost:8000/api/chat/ws/${user.email}`
-    : null;
+  const socketUrl = user ? CHAT_WS_URL + `/${user.email}` : null;
   const { sendMessage } = useWebSocket(socketUrl, {
     onOpen: () => console.log("opened"),
     onMessage: (event) => {

@@ -7,6 +7,7 @@ import {
 } from "../requests";
 import { AuthContext } from "./root";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../constants";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function Profile() {
   useEffect(() => {
     if (user != null) {
       setPhotoPath(
-        `http://localhost:8000/api/user/id/${user.id}/photo?hash=${Date.now()}`,
+        BACKEND_URL + `/api/user/id/${user.id}/photo?hash=${Date.now()}`,
       );
     }
   }, [user]);
@@ -35,7 +36,7 @@ export default function Profile() {
   const updatePhoto = function () {
     if (user != null) {
       setPhotoPath(
-        `http://localhost:8000/api/user/id/${user.id}/photo?hash=${Date.now()}`,
+        BACKEND_URL + `/api/user/id/${user.id}/photo?hash=${Date.now()}`,
       );
     }
   };
