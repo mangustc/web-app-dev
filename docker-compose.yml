@@ -3,13 +3,15 @@ services:
     build: ./back
     ports:
       - "8000:8000"
+    volumes:
+      - "./docker-serverfiles:/code/serverfiles"
   front:
     build: ./front
     volumes:
-      - "/home/ivan/git/web-app-dev/docker-volume:/html"
+      - "./docker-html:/html"
   nginx:
     build: ./nginx
     ports:
       - "80:80"
     volumes:
-      - "/home/ivan/git/web-app-dev/docker-volume:/usr/share/nginx/html"
+      - "./docker-html:/usr/share/nginx/html"
