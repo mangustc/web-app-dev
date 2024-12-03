@@ -28,7 +28,7 @@ export default function Profile() {
   useEffect(() => {
     if (user != null) {
       setPhotoPath(
-        BACKEND_URL + `/api/user/id/${user.id}/photo?hash=${Date.now()}`,
+        BACKEND_URL + `/user/id/${user.id}/photo?hash=${Date.now()}`,
       );
     }
   }, [user]);
@@ -36,7 +36,7 @@ export default function Profile() {
   const updatePhoto = function () {
     if (user != null) {
       setPhotoPath(
-        BACKEND_URL + `/api/user/id/${user.id}/photo?hash=${Date.now()}`,
+        BACKEND_URL + `/user/id/${user.id}/photo?hash=${Date.now()}`,
       );
     }
   };
