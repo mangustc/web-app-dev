@@ -1,4 +1,4 @@
-FROM node:23.1.0 as front-app
+FROM node:23.1.0
 
 WORKDIR /app
 
@@ -11,16 +11,7 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:1.27.3
+#COPY ./dist /html
 
-WORKDIR /usr/share/nginx/
-
-RUN rm -rf html
-RUN mkdir html
-
-WORKDIR /
-
-COPY ./nginx/nginx.conf /etc/nginx
-COPY --from=front-app ./app/dist /usr/share/nginx/html
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD [ "cp", "-rfva", "/app/dist/.", "/html"]
+# CMD [ "cat", "/app/dist/index.html" ]

@@ -5,5 +5,11 @@ services:
       - "8000:8000"
   front:
     build: ./front
+    volumes:
+      - "/home/ivan/git/web-app-dev/docker-volume:/html"
+  nginx:
+    build: ./nginx
     ports:
       - "80:80"
+    volumes:
+      - "/home/ivan/git/web-app-dev/docker-volume:/usr/share/nginx/html"
