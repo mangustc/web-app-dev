@@ -8,6 +8,8 @@ import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if not os.path.isdir("./serverfiles"):
+        os.mkdir("./serverfiles")
     if not os.path.isfile("./serverfiles/site.db"):
         await create_tables()
     yield
