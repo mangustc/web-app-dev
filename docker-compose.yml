@@ -1,0 +1,17 @@
+services:
+  back:
+    build: ./back
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker-serverfiles:/code/serverfiles"
+  front:
+    build: ./front
+    volumes:
+      - "./docker-html:/html"
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "./docker-html:/usr/share/nginx/html"

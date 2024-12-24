@@ -1,0 +1,9 @@
+fastapi[standard]
+uvicorn
+sqlalchemy
+aiosqlite
+python-multipart
+aiofiles
+pyjwt
+websockets
+typer
